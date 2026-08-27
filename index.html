@@ -8,27 +8,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#08100c;
-    --bezel:#0f1713;
-    --screen:#0b1512;
-    --line:#233029;
-    --line-soft:#1a251f;
-    --bone:#e9e4d6;
-    --bone-dim:#8d9186;
-    --moss:#8bb572;
-    --moss-glow:rgba(139,181,114,0.45);
-    --moss-dim:#3f5535;
-    --rust:#c6614a;
-    --rust-glow:rgba(198,97,74,0.4);
-    --rust-dim:#5c2c22;
-    --amber:#d4a256;
+    --bg:#0a0710;
+    --bezel:#130d1c;
+    --screen:#0f0a17;
+    --line:#2b2140;
+    --line-soft:#1e1730;
+    --bone:#ece7f5;
+    --bone-dim:#948da8;
+    --moss:#a476e8;
+    --moss-glow:rgba(164,118,232,0.55);
+    --moss-dim:#4a3568;
+    --rust:#6b5f85;
+    --rust-glow:rgba(107,95,133,0.45);
+    --rust-dim:#332a48;
+    --amber:#c9a8f0;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background:
-      radial-gradient(ellipse 900px 500px at 50% 0%, rgba(139,181,114,0.06), transparent 65%),
-      radial-gradient(ellipse 700px 500px at 100% 100%, rgba(212,162,86,0.04), transparent 60%),
+      radial-gradient(ellipse 900px 500px at 50% 0%, rgba(164,118,232,0.09), transparent 65%),
+      radial-gradient(ellipse 700px 500px at 100% 100%, rgba(107,60,150,0.06), transparent 60%),
       var(--bg);
     color:var(--bone);
     font-family:'Space Mono', monospace;
@@ -210,7 +210,7 @@
 
   .stats{
     display:grid;
-    grid-template-columns:1fr 1fr 1fr;
+    grid-template-columns:1fr 1fr;
     gap:1px;
     background:var(--line);
     border:1px solid var(--line);
@@ -333,7 +333,6 @@
   @media (max-width:420px){
     .screen{ padding:24px 16px 18px; }
     h1{ font-size:27px; }
-    .stats{ grid-template-columns:1fr 1fr; }
     .status-word{ font-size:21px; }
   }
 
@@ -377,10 +376,6 @@
         <div class="v" id="playersVal">—</div>
       </div>
       <div class="stat">
-        <div class="k">Versi</div>
-        <div class="v" id="versionVal">—</div>
-      </div>
-      <div class="stat">
         <div class="k">Respon</div>
         <div class="v" id="pingVal">—</div>
       </div>
@@ -421,7 +416,6 @@
   const ecgPathEl = document.getElementById("ecgPath");
   const bpmLabelEl = document.getElementById("bpmLabel");
   const playersValEl = document.getElementById("playersVal");
-  const versionValEl = document.getElementById("versionVal");
   const pingValEl = document.getElementById("pingVal");
   const motdValEl = document.getElementById("motdVal");
   const epitaphEl = document.getElementById("epitaph");
@@ -436,13 +430,13 @@
   const HEART_ICON = `<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity="0.25"></circle>
     <path d="M12 19s-6.5-4.2-6.5-9.1C5.5 7.2 7.3 5.5 9.5 5.5c1.3 0 2.4.7 3 1.7.6-1 1.7-1.7 3-1.7 2.2 0 4 1.7 4 4.4C19.5 14.8 12 19 12 19z" fill="currentColor" stroke="none"></path>`;
   const SKULL_ICON = `<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity="0.25"></circle>
-    <circle cx="9" cy="11" r="1.4" fill="currentColor"></circle>
-    <circle cx="15" cy="11" r="1.4" fill="currentColor"></circle>
-    <path d="M9 15.5c1 1 5 1 6 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>`;
+    <path d="M7 9c3-2.5 7-2.5 10 0" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5"></path>
+    <circle cx="12" cy="15" r="1.3" fill="currentColor"></circle>
+    <path d="M5 5l14 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>`;
   const PENDING_ICON = `<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"></circle>`;
 
   const EPITAPHS_ALIVE = ["dunia masih berdenyut.", "belum ada yang jatuh malam ini.", "obor masih menyala.", "hidup, untuk saat ini."];
-  const EPITAPHS_DEAD = ["tak ada denyut yang tersisa.", "dunia sedang tertidur.", "sunyi. tak ada sinyal.", "layar mendatar."];
+  const EPITAPHS_DEAD = ["sinyal terputus di kegelapan.", "tidak ada balasan dari dunia.", "koneksi menghilang.", "diam. tak terjangkau."];
 
   function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
 
@@ -465,7 +459,7 @@
       recDot.style.boxShadow = "0 0 6px 1px var(--moss-glow)";
     } else if(state === "dead"){
       statusWordEl.classList.add("dead");
-      statusTextEl.textContent = "Tumbang";
+      statusTextEl.textContent = "Hilang Sinyal";
       statusIconEl.innerHTML = SKULL_ICON;
       ecgPathEl.classList.add("dead");
       ecgPathEl.setAttribute("d", DEAD_PATH);
@@ -514,21 +508,18 @@
         const max = data.players && typeof data.players.max === "number" ? data.players.max : "?";
         setState("alive", online);
         playersValEl.textContent = `${online} / ${max}`;
-        versionValEl.textContent = (data.version || "tidak diketahui").toString();
         pingValEl.textContent = `${elapsed} ms`;
         const motdLines = (data.motd && data.motd.clean) ? data.motd.clean.join(" ") : "(tidak ada pesan)";
         motdValEl.textContent = motdLines || "(tidak ada pesan)";
       } else {
         setState("dead");
         playersValEl.textContent = "—";
-        versionValEl.textContent = "—";
         pingValEl.textContent = `${elapsed} ms`;
         motdValEl.textContent = "server tidak merespons — kemungkinan sedang tidur karena tidak ada pemain (free tier).";
       }
     } catch(err){
       setState("dead");
       playersValEl.textContent = "—";
-      versionValEl.textContent = "—";
       pingValEl.textContent = "gagal";
       motdValEl.textContent = "gagal menghubungi layanan pengecekan status. coba lagi sebentar lagi.";
     } finally {
