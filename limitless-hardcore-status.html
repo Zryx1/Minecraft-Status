@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Limitless Hardcore — Vitals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08100c;
+    --bezel:#0f1713;
+    --screen:#0b1512;
+    --line:#233029;
+    --line-soft:#1a251f;
+    --bone:#e9e4d6;
+    --bone-dim:#8d9186;
+    --moss:#8bb572;
+    --moss-glow:rgba(139,181,114,0.45);
+    --moss-dim:#3f5535;
+    --rust:#c6614a;
+    --rust-glow:rgba(198,97,74,0.4);
+    --rust-dim:#5c2c22;
+    --amber:#d4a256;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 50% 0%, rgba(139,181,114,0.06), transparent 65%),
+      radial-gradient(ellipse 700px 500px at 100% 100%, rgba(212,162,86,0.04), transparent 60%),
+      var(--bg);
+    color:var(--bone);
+    font-family:'Space Mono', monospace;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 16px;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* drifting embers */
+  .ember{
+    position:fixed;
+    bottom:-10px;
+    width:3px;height:3px;
+    border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 6px 1px var(--amber);
+    opacity:0;
+    pointer-events:none;
+    animation:drift linear infinite;
+  }
+  @keyframes drift{
+    0%{ transform:translateY(0) translateX(0); opacity:0; }
+    8%{ opacity:0.7; }
+    90%{ opacity:0.3; }
+    100%{ transform:translateY(-105vh) translateX(var(--dx,20px)); opacity:0; }
+  }
+
+  .bezel{
+    width:100%;
+    max-width:580px;
+    background:linear-gradient(160deg, var(--bezel), #0a100d);
+    border-radius:10px;
+    padding:16px;
+    box-shadow:
+      0 30px 60px -20px rgba(0,0,0,0.7),
+      inset 0 1px 0 rgba(255,255,255,0.03);
+    position:relative;
+    z-index:1;
+  }
+  .rivet{
+    position:absolute;
+    width:6px;height:6px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #4a5750, #10160f);
+    box-shadow:0 1px 1px rgba(0,0,0,0.6);
+  }
+  .rivet.tl{ top:9px; left:9px; }
+  .rivet.tr{ top:9px; right:9px; }
+  .rivet.bl{ bottom:9px; left:9px; }
+  .rivet.br{ bottom:9px; right:9px; }
+
+  .screen{
+    background:
+      repeating-linear-gradient(rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px),
+      var(--screen);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:30px 26px 22px;
+    box-shadow:inset 0 2px 24px rgba(0,0,0,0.55);
+  }
+
+  .top-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .rec-dot{
+    width:6px;height:6px;
+    border-radius:50%;
+    background:var(--moss);
+    box-shadow:0 0 6px 1px var(--moss-glow);
+    animation:blink 1.6s ease-in-out infinite;
+  }
+  @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:0.25;} }
+  .eyebrow{
+    text-transform:uppercase;
+    letter-spacing:0.28em;
+    font-size:9.5px;
+    color:var(--bone-dim);
+    margin:0;
+  }
+
+  h1{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-style:italic;
+    font-size:34px;
+    text-align:center;
+    margin:0 0 4px;
+    letter-spacing:0.01em;
+    background:linear-gradient(180deg, var(--bone), #c7c2b3);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .tagline{
+    text-align:center;
+    font-size:9.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--bone-dim);
+    margin:0 0 24px;
+  }
+
+  .monitor{
+    background:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.05));
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:20px 18px 14px;
+    margin-bottom:20px;
+    position:relative;
+  }
+
+  .status-line{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:12px;
+  }
+  .status-word{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-weight:600;
+    font-size:26px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+  }
+  .status-word.alive{ color:var(--moss); text-shadow:0 0 18px var(--moss-glow); }
+  .status-word.dead{ color:var(--rust); text-shadow:0 0 18px var(--rust-glow); }
+  .status-word.pending{ color:var(--amber); }
+  .status-icon{ width:18px; height:18px; flex-shrink:0; }
+  .status-icon.alive-icon{ animation:heartbeat 1.1s ease-in-out infinite; }
+
+  @keyframes heartbeat{
+    0%,100%{ transform:scale(1); }
+    25%{ transform:scale(1.18); }
+    40%{ transform:scale(0.96); }
+  }
+
+  .bpm{
+    font-size:10px;
+    color:var(--bone-dim);
+    letter-spacing:0.08em;
+    text-align:right;
+  }
+  .bpm b{ color:var(--bone); font-size:13px; }
+
+  .ecg-wrap{
+    background:
+      repeating-linear-gradient(90deg, var(--line-soft) 0, var(--line-soft) 1px, transparent 1px, transparent 22px),
+      repeating-linear-gradient(0deg, var(--line-soft) 0, var(--line-soft) 1px, transparent 1px, transparent 22px);
+    border:1px solid var(--line-soft);
+    border-radius:2px;
+    padding:4px 0;
+  }
+  svg#ecg{ width:100%; height:58px; display:block; }
+  .ecg-path{
+    fill:none;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+  .ecg-path.alive{ stroke:var(--moss); filter:drop-shadow(0 0 4px var(--moss-glow)); }
+  .ecg-path.dead{ stroke:var(--rust-dim); }
+  .ecg-path.pending{ stroke:var(--amber); opacity:0.55; }
+  .ecg-anim{
+    stroke-dasharray:900;
+    stroke-dashoffset:900;
+    animation:draw 2.2s linear infinite;
+  }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+
+  .stats{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    margin-bottom:18px;
+  }
+  .stat{
+    background:#101a15;
+    padding:13px 12px;
+  }
+  .stat .k{
+    font-size:8.5px;
+    text-transform:uppercase;
+    letter-spacing:0.15em;
+    color:var(--bone-dim);
+    margin-bottom:6px;
+  }
+  .stat .v{
+    font-size:15px;
+    color:var(--bone);
+  }
+  .stat.wide{ grid-column:1 / -1; }
+  .stat .v.small{ font-size:11.5px; color:var(--bone-dim); line-height:1.5; }
+
+  .addr-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:#101a15;
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:10px 10px 10px 14px;
+    margin-bottom:18px;
+  }
+  .addr-text{
+    flex:1;
+    font-size:11px;
+    color:var(--bone-dim);
+    word-break:break-all;
+  }
+  .addr-text b{ color:var(--bone); font-weight:400; }
+  button#copyBtn{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--bone-dim);
+    width:30px;height:30px;
+    border-radius:3px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    transition:border-color 0.15s ease, color 0.15s ease;
+  }
+  button#copyBtn:hover{ border-color:var(--moss-dim); color:var(--moss); }
+  button#copyBtn svg{ width:14px; height:14px; }
+
+  .footer-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:12px;
+  }
+  .epitaph{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:12.5px;
+    color:var(--bone-dim);
+  }
+  button#refresh{
+    background:linear-gradient(180deg, #1c2a20, #131e17);
+    border:1px solid var(--moss-dim);
+    color:var(--moss);
+    font-family:'Space Mono', monospace;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    padding:10px 16px;
+    border-radius:3px;
+    cursor:pointer;
+    box-shadow:0 1px 0 rgba(255,255,255,0.04) inset, 0 2px 6px rgba(0,0,0,0.3);
+    transition:background 0.15s ease, color 0.15s ease, transform 0.05s ease;
+    white-space:nowrap;
+  }
+  button#refresh:hover{ background:var(--moss-dim); color:#0b1512; }
+  button#refresh:active{ transform:translateY(1px); }
+  button#refresh:focus-visible{ outline:2px solid var(--amber); outline-offset:2px; }
+  button#refresh:disabled{ opacity:0.45; cursor:default; }
+
+  .countdown-track{
+    height:2px;
+    background:var(--line-soft);
+    border-radius:2px;
+    overflow:hidden;
+    margin-bottom:10px;
+  }
+  .countdown-fill{
+    height:100%;
+    width:100%;
+    background:var(--moss-dim);
+    transform-origin:left;
+  }
+  .countdown-fill.running{
+    animation:countdown 30s linear infinite;
+  }
+  @keyframes countdown{
+    from{ transform:scaleX(1); }
+    to{ transform:scaleX(0); }
+  }
+
+  .last-checked{
+    text-align:center;
+    font-size:9px;
+    color:var(--bone-dim);
+    letter-spacing:0.08em;
+  }
+
+  @media (max-width:420px){
+    .screen{ padding:24px 16px 18px; }
+    h1{ font-size:27px; }
+    .stats{ grid-template-columns:1fr 1fr; }
+    .status-word{ font-size:21px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .ecg-anim, .rec-dot, .status-icon.alive-icon, .ember, .countdown-fill.running{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bezel">
+  <span class="rivet tl"></span><span class="rivet tr"></span><span class="rivet bl"></span><span class="rivet br"></span>
+  <div class="screen">
+    <div class="top-row">
+      <span class="rec-dot" id="recDot"></span>
+      <p class="eyebrow">Vitals Monitor · Live</p>
+    </div>
+    <h1>Limitless Hardcore</h1>
+    <p class="tagline">Hardcore Survival — No Second Chances</p>
+
+    <div class="monitor">
+      <div class="status-line">
+        <span class="status-word pending" id="statusWord">
+          <svg class="status-icon" id="statusIcon" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"></circle>
+          </svg>
+          <span id="statusText">Memeriksa…</span>
+        </span>
+        <span class="bpm" id="bpmLabel">&nbsp;</span>
+      </div>
+      <div class="ecg-wrap">
+        <svg id="ecg" viewBox="0 0 300 58" preserveAspectRatio="none">
+          <path id="ecgPath" class="ecg-path pending" d="M0,29 L300,29"></path>
+        </svg>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="k">Pemain</div>
+        <div class="v" id="playersVal">—</div>
+      </div>
+      <div class="stat">
+        <div class="k">Versi</div>
+        <div class="v" id="versionVal">—</div>
+      </div>
+      <div class="stat">
+        <div class="k">Respon</div>
+        <div class="v" id="pingVal">—</div>
+      </div>
+      <div class="stat wide">
+        <div class="k">Pesan Dunia (MOTD)</div>
+        <div class="v small" id="motdVal">—</div>
+      </div>
+    </div>
+
+    <div class="addr-row">
+      <span class="addr-text">Alamat: <b id="addrText">limitlesthardcore.mcsh.io:19132</b></span>
+      <button id="copyBtn" title="Salin alamat" aria-label="Salin alamat server">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="8" y="8" width="12" height="12" rx="1.5"></rect>
+          <path d="M4 16V5a1 1 0 0 1 1-1h11"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="footer-row">
+      <span class="epitaph" id="epitaph">menunggu tanda kehidupan…</span>
+      <button id="refresh">Cek Ulang</button>
+    </div>
+    <div class="countdown-track"><div class="countdown-fill" id="countdownFill"></div></div>
+    <p class="last-checked" id="lastChecked">belum pernah dicek</p>
+  </div>
+</div>
+
+<script>
+  const SERVER_HOST = "limitlesthardcore.mcsh.io";
+  const SERVER_PORT = "19132";
+  const API_URL = `https://api.mcsrvstat.us/bedrock/3/${SERVER_HOST}:${SERVER_PORT}`;
+  const AUTO_REFRESH_MS = 30000;
+
+  const statusWordEl = document.getElementById("statusWord");
+  const statusTextEl = document.getElementById("statusText");
+  const statusIconEl = document.getElementById("statusIcon");
+  const ecgPathEl = document.getElementById("ecgPath");
+  const bpmLabelEl = document.getElementById("bpmLabel");
+  const playersValEl = document.getElementById("playersVal");
+  const versionValEl = document.getElementById("versionVal");
+  const pingValEl = document.getElementById("pingVal");
+  const motdValEl = document.getElementById("motdVal");
+  const epitaphEl = document.getElementById("epitaph");
+  const lastCheckedEl = document.getElementById("lastChecked");
+  const refreshBtn = document.getElementById("refresh");
+  const copyBtn = document.getElementById("copyBtn");
+  const recDot = document.getElementById("recDot");
+  const countdownFill = document.getElementById("countdownFill");
+
+  const ALIVE_PATH = "M0,29 L38,29 L52,29 L62,9 L72,49 L82,16 L92,29 L118,29 L133,29 L143,14 L153,44 L163,29 L188,29 L203,29 L213,9 L223,49 L233,16 L243,29 L268,29 L283,29 L300,29";
+  const DEAD_PATH  = "M0,29 L300,29";
+  const HEART_ICON = `<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity="0.25"></circle>
+    <path d="M12 19s-6.5-4.2-6.5-9.1C5.5 7.2 7.3 5.5 9.5 5.5c1.3 0 2.4.7 3 1.7.6-1 1.7-1.7 3-1.7 2.2 0 4 1.7 4 4.4C19.5 14.8 12 19 12 19z" fill="currentColor" stroke="none"></path>`;
+  const SKULL_ICON = `<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" opacity="0.25"></circle>
+    <circle cx="9" cy="11" r="1.4" fill="currentColor"></circle>
+    <circle cx="15" cy="11" r="1.4" fill="currentColor"></circle>
+    <path d="M9 15.5c1 1 5 1 6 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>`;
+  const PENDING_ICON = `<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"></circle>`;
+
+  const EPITAPHS_ALIVE = ["dunia masih berdenyut.", "belum ada yang jatuh malam ini.", "obor masih menyala.", "hidup, untuk saat ini."];
+  const EPITAPHS_DEAD = ["tak ada denyut yang tersisa.", "dunia sedang tertidur.", "sunyi. tak ada sinyal.", "layar mendatar."];
+
+  function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function setState(state, playerCount){
+    statusWordEl.classList.remove("alive", "dead", "pending");
+    ecgPathEl.classList.remove("alive", "dead", "pending", "ecg-anim");
+    statusIconEl.classList.remove("alive-icon");
+
+    if(state === "alive"){
+      statusWordEl.classList.add("alive");
+      statusTextEl.textContent = "Hidup";
+      statusIconEl.innerHTML = HEART_ICON;
+      statusIconEl.classList.add("alive-icon");
+      ecgPathEl.classList.add("alive", "ecg-anim");
+      ecgPathEl.setAttribute("d", ALIVE_PATH);
+      epitaphEl.textContent = pick(EPITAPHS_ALIVE);
+      const n = typeof playerCount === "number" ? playerCount : 0;
+      bpmLabelEl.innerHTML = `<b>${60 + n * 14}</b> bpm`;
+      recDot.style.background = "var(--moss)";
+      recDot.style.boxShadow = "0 0 6px 1px var(--moss-glow)";
+    } else if(state === "dead"){
+      statusWordEl.classList.add("dead");
+      statusTextEl.textContent = "Tumbang";
+      statusIconEl.innerHTML = SKULL_ICON;
+      ecgPathEl.classList.add("dead");
+      ecgPathEl.setAttribute("d", DEAD_PATH);
+      epitaphEl.textContent = pick(EPITAPHS_DEAD);
+      bpmLabelEl.innerHTML = `<b>0</b> bpm`;
+      recDot.style.background = "var(--rust)";
+      recDot.style.boxShadow = "0 0 6px 1px var(--rust-glow)";
+    } else {
+      statusWordEl.classList.add("pending");
+      statusTextEl.textContent = "Memeriksa…";
+      statusIconEl.innerHTML = PENDING_ICON;
+      ecgPathEl.classList.add("pending");
+      ecgPathEl.setAttribute("d", DEAD_PATH);
+      epitaphEl.textContent = "menunggu tanda kehidupan…";
+      bpmLabelEl.innerHTML = "&nbsp;";
+      recDot.style.background = "var(--amber)";
+      recDot.style.boxShadow = "0 0 6px 1px rgba(212,162,86,0.4)";
+    }
+  }
+
+  function formatTime(){
+    return new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+
+  function restartCountdown(){
+    countdownFill.classList.remove("running");
+    void countdownFill.offsetWidth;
+    countdownFill.classList.add("running");
+  }
+
+  async function checkStatus(){
+    refreshBtn.disabled = true;
+    refreshBtn.textContent = "Memeriksa...";
+    setState("pending");
+    pingValEl.textContent = "—";
+
+    const t0 = performance.now();
+    try{
+      const res = await fetch(API_URL, { cache: "no-store" });
+      const elapsed = Math.round(performance.now() - t0);
+      if(!res.ok) throw new Error("Layanan status tidak merespons");
+      const data = await res.json();
+
+      if(data && data.online){
+        const online = data.players && typeof data.players.online === "number" ? data.players.online : 0;
+        const max = data.players && typeof data.players.max === "number" ? data.players.max : "?";
+        setState("alive", online);
+        playersValEl.textContent = `${online} / ${max}`;
+        versionValEl.textContent = (data.version || "tidak diketahui").toString();
+        pingValEl.textContent = `${elapsed} ms`;
+        const motdLines = (data.motd && data.motd.clean) ? data.motd.clean.join(" ") : "(tidak ada pesan)";
+        motdValEl.textContent = motdLines || "(tidak ada pesan)";
+      } else {
+        setState("dead");
+        playersValEl.textContent = "—";
+        versionValEl.textContent = "—";
+        pingValEl.textContent = `${elapsed} ms`;
+        motdValEl.textContent = "server tidak merespons — kemungkinan sedang tidur karena tidak ada pemain (free tier).";
+      }
+    } catch(err){
+      setState("dead");
+      playersValEl.textContent = "—";
+      versionValEl.textContent = "—";
+      pingValEl.textContent = "gagal";
+      motdValEl.textContent = "gagal menghubungi layanan pengecekan status. coba lagi sebentar lagi.";
+    } finally {
+      lastCheckedEl.textContent = `terakhir dicek pukul ${formatTime()}`;
+      refreshBtn.disabled = false;
+      refreshBtn.textContent = "Cek Ulang";
+      restartCountdown();
+    }
+  }
+
+  copyBtn.addEventListener("click", async () => {
+    try{
+      await navigator.clipboard.writeText(`${SERVER_HOST}:${SERVER_PORT}`);
+      const original = copyBtn.innerHTML;
+      copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12l5 5L20 6"/></svg>`;
+      setTimeout(() => { copyBtn.innerHTML = original; }, 1400);
+    } catch(e){ /* clipboard unavailable, ignore quietly */ }
+  });
+
+  refreshBtn.addEventListener("click", checkStatus);
+
+  // ambient embers
+  const emberCount = 14;
+  for(let i=0;i<emberCount;i++){
+    const e = document.createElement("div");
+    e.className = "ember";
+    e.style.left = `${Math.random()*100}%`;
+    e.style.setProperty("--dx", `${(Math.random()*40-20).toFixed(0)}px`);
+    e.style.animationDuration = `${9 + Math.random()*8}s`;
+    e.style.animationDelay = `${Math.random()*10}s`;
+    document.body.appendChild(e);
+  }
+
+  checkStatus();
+  setInterval(checkStatus, AUTO_REFRESH_MS);
+</script>
+
+</body>
+</html>
